@@ -1,4 +1,6 @@
 function rollDice() {
-    const diceNumber = Math.random(Math.floor()*6);
+    const diceNumber = Math.floor(Math.random() * 6) + 1;
     return diceNumber;
 }
+
+export {rollDice};
