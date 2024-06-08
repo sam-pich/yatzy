@@ -1,13 +1,54 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-    <title>Yatzy</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+    <script src="assets/dice.js" defer></script>
+    <script src="assets/yatzy_engine.js" defer></script>
+    <script src="assets/yatzy_game.js" defer></script>
+
+    <script defer>
+        document.addEventListener('DOMContentLoaded', () => {
+            // dice.js
+            console.log('testing dice.js');
+            console.log('rolling 5 dice:', rollDice(5));
+
+            // yatzy_game.js
+            console.log('testing yatzy_game.js');
+            const game = new yatzyGame();
+            console.log('initial game:', game);
+
+            game.rollDice();
+            console.log('game state after rolling die:', game);
+
+            game.rerollDie(0);
+            console.log('game state after rerolling die:', game);
+
+            game.turnReset();
+            console.log('turn reset:', game);
+
+            // yatzy_engine.js
+            console.log('testing yatzy_engine.js');
+            const diceValues = [1, 1, 2, 3, 4];
+            console.log('score of ones:', score(diceValues));
+            console.log('score of twos:', score_two(diceValues));
+
+
+            const gameEngine = {
+                diceValue: diceValues,
+                counter: 0
+            };
+
+
+            updateScore(gameEngine, "ones");
+            console.log('game state after updating scoreboard with ones:', gameEngine);
+        });
+    </script>
 </head>
+
+
 <body>
-    <h1>Yatzy Game</h1>
-    <script type = "module" src="dice.js"></script>
-    <script type = "module" src="yatzy_game.js"></script>
-    <script type = "module" src="yatzy_engine.js"></script>
+<h1>test</h1>
 </body>
 </html>

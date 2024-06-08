@@ -1,16 +1,32 @@
-import {rollDice} from './dice.js';
+class yatzyGame {
+  constructor() {
+    this.rollCounter = 0;
+    this.diceValue = [0, 0, 0, 0, 0]; // five dices, init at 0
+    this.rerollBool = [false, false, false, false, false];
+  }
 
-const values = [0,0,0,0,0];
-
-function turn() {
-    let roll = 0;
-    for (let x = 0; x < values.length; x++) {
-        values[x] = rollDice();
-        roll += 1;
+  // if rolls are less than 3 then for every 5 dice roll them all and update array
+  rollDice() {
+    if (this.rollCounter < 3) {
+      for (let i = 0; i < 5; i++) {
+        if (!this.rerollBool[i]) {
+          this.diceValue[i] = Math.floor(Math.random() * 6) + 1;
+        }
+      }
+      this.rollCounter++;
     }
+  }
 
-    console.log(values)
+  rerollDie(x) {
+    if (x >= 0 && x < 5) {
+      this.rerollBool[x] = !this.rerollBool[x];
+    }
+  }
 
+  turnReset() {
+    this.rollCounter = 0;
+    this.diceValue = [0, 0, 0, 0, 0]; // five dices, init at 0
+    this.rerollBool = [false, false, false, false, false];
+  }
 }
 
-turn();
