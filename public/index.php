@@ -68,9 +68,13 @@ use Yatzy\YatzyEngine;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+use Yatzy\Leaderboard;
+require __DIR__ . '/../vendor/autoload.php';
 
 
 $app = AppFactory::create();
+$leaderboard = new Leaderboard();
+
 
 // get html page
 $app->get('/', function (Request $request, Response $response, $args) {
@@ -89,6 +93,21 @@ $app->get('/api/version', function (Request $request, Response $response, $args)
 $app->get('/api/roll', function (Request $request, Response $response, $args) {
     $d = new Dice();
     $data = ["value" => $d->roll()];
+    return jsonReply($response, $data);
+});
+
+// leaderboard api routes
+$app->get('/api/leaderboard', function (Request $request, Response $response, $args) use ($leaderboard) {
+    $data = ['leaderboard' => $leaderboard->getScores()];
+    return jsonReply($response, $data);
+});
+
+$app->post('/api/leaderboard', function (Request $request, Response $response, $args) use ($leaderboard) {
+    $parsedBody = $request->getParsedBody();
+    $player = $parsedBody['player'];
+    $score = $parsedBody['score'];
+    $leaderboard->addScore($player, $score);
+    $data = ['status' => 'success'];
     return jsonReply($response, $data);
 });
 

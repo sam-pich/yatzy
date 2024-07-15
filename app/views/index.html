@@ -4,13 +4,45 @@
     <meta charset="UTF-8">
     <title>Yatzy Game</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        #leaderboard {
+            margin-top: 10px;
+        }
+        #leaderboard table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #leaderboard th, #leaderboard td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        #leaderboard th {
+            background-color: #fefefe;
+        }
+    </style>
 </head>
 <body>
+
 <div id="output">--</div>
 <button id="version">Version</button>
 
 <div id="die1">--</div>
 <button id="roll">Roll</button>
+
+<div id="leaderboard">
+    <h1>Leaderboard</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Player</th>
+            <th>Score</th>
+        </tr>
+        </thead>
+        <tbody id="leaderboard-body">
+        <!-- add leaderboard stuff here -->
+        </tbody>
+    </table>
+</div>
 
 <script>
     $(document).ready(function() {
@@ -30,9 +62,38 @@
                 method: 'GET',
                 success: function(data) {
                     $('#die1').html(data.value);
+                    $.ajax({
+                        url: '/api/leaderboard',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ player: 'Player1', score: data.value }),
+                        success: function() {
+                            updateLeaderboard();
+                        }
+                    });
                 },
+                error: function() {
+                    $('#die1').html('Error rolling die');
+                }
             });
         });
+
+        function updateLeaderboard() {
+            $.ajax({
+                url: '/api/leaderboard',
+                method: 'GET',
+                success: function(data) {
+                    const leaderboard = data.leaderboard;
+                    const tbody = $('#leaderboard-body');
+                    tbody.empty();
+                    leaderboard.forEach(function(entry) {
+                        tbody.append('<tr><td>' + entry.player + '</td><td>' + entry.score + '</td></tr>');
+                    });
+                },
+            });
+        }
+
+        updateLeaderboard();
     });
 </script>
 </body>
