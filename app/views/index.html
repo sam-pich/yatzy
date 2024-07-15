@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Yatzy Game</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div id="output">--</div>
+<button id="version">Version</button>
+
+<div id="die1">--</div>
+<button id="roll">Roll</button>
+
+<script>
+    $(document).ready(function() {
+        $('#version').click(function() {
+            $.ajax({
+                url: '/api/version',
+                method: 'GET',
+                success: function(data) {
+                    $('#output').html(data.version);
+                },
+            });
+        });
+
+        $('#roll').click(function() {
+            $.ajax({
+                url: '/api/roll',
+                method: 'GET',
+                success: function(data) {
+                    $('#die1').html(data.value);
+                },
+            });
+        });
+    });
+</script>
+</body>
+</html>
