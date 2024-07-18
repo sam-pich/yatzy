@@ -11,11 +11,12 @@
                 $.ajax({
                     url: '/api/version',
                     method: 'GET',
+
                     success: function(data) {
                         $('#output').html(data.version);
                     },
                     error: function() {
-                        $('#output').html('Error fetching version');
+                        $('#output').html('Error getting version');
                     }
                 });
             });
@@ -24,6 +25,7 @@
                 $.ajax({
                     url: '/api/roll',
                     method: 'GET',
+
                     success: function(data) {
                         let roll = data.roll;
                         let diceContainer = $('#dice-container');
@@ -46,6 +48,7 @@
                 $.ajax({
                     url: '/api/leaderboard',
                     method: 'GET',
+
                     success: function(data) {
                         let leaderboard = data.leaderboard;
                         let tbody = $('#leaderboard-body');
@@ -54,7 +57,6 @@
 
                         leaderboard.forEach(function(entry) {
                             let row = $('<tr>');
-
                             row.append($('<td>').text(entry.player));
                             row.append($('<td>').text(entry.score));
                             tbody.append(row);
@@ -75,6 +77,7 @@
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ player: player, score: score }),
+
                     success: function() {
                         updateLeaderboard();
                     },
@@ -88,6 +91,7 @@
                 $.ajax({
                     url: '/api/leaderboard/clear',
                     method: 'POST',
+
                     success: function() {
                         updateLeaderboard();
                     },
@@ -97,7 +101,7 @@
                 });
             });
 
-            // init leaderboard
+            // init leaderboards
             updateLeaderboard();
         });
     </script>
@@ -122,12 +126,12 @@
                 </tr>
                 </thead>
                 <tbody id="leaderboard-body">
-                <!-- leaderboard gets populated here -->
+                <!-- leaderboard updates here -->
                 </tbody>
             </table>
         </div>
         <div id="submit-score-form">
-            <h1>Submit Score</h1>
+            <h2>Submit Score</h2>
             <input type="text" id="player-name" placeholder="Player Name">
             <input type="text" id="player-score" placeholder="Player Score">
             <button id="submit-score">Submit Score</button>

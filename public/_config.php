@@ -4,7 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $GLOBALS["appDir"] = resolve_path("../app");
 
-function resolve_path($name): false|string
+function resolve_path($name)
 {
     if ($name == ".")
     {
