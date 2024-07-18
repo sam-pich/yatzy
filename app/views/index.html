@@ -1,100 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="styles.css">
     <meta charset="UTF-8">
     <title>Yatzy Game</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-        #leaderboard {
-            margin-top: 10px;
-        }
-        #leaderboard table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        #leaderboard th, #leaderboard td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        #leaderboard th {
-            background-color: #fefefe;
-        }
-    </style>
+    <script>
+        $(document).ready(function() {
+            $('#version').click(function() {
+                $.ajax({
+                    url: '/api/version',
+                    method: 'GET',
+                    success: function(data) {
+                        $('#output').html(data.version);
+                    },
+                    error: function() {
+                        $('#output').html('Error fetching version');
+                    }
+                });
+            });
+
+            $('#roll').click(function() {
+                $.ajax({
+                    url: '/api/roll',
+                    method: 'GET',
+                    success: function(data) {
+                        let roll = data.roll;
+                        let diceContainer = $('#dice-container');
+
+                        diceContainer.empty();
+
+                        roll.forEach(function(num) {
+                            let dice = $('<img>').attr('src', 'assets/d' + num + '.svg').addClass('dice');
+                            diceContainer.append(dice);
+                        });
+                        $('#output').html('Roll: ' + roll.join(', '));
+                    },
+                    error: function() {
+                        $('#output').html('Error getting roll');
+                    }
+                });
+            });
+
+            function updateLeaderboard() {
+                $.ajax({
+                    url: '/api/leaderboard',
+                    method: 'GET',
+                    success: function(data) {
+                        let leaderboard = data.leaderboard;
+                        let tbody = $('#leaderboard-body');
+
+                        tbody.empty();
+
+                        leaderboard.forEach(function(entry) {
+                            let row = $('<tr>');
+
+                            row.append($('<td>').text(entry.player));
+                            row.append($('<td>').text(entry.score));
+                            tbody.append(row);
+                        });
+                    },
+                    error: function() {
+                        $('#output').html('Error getting leaderboard');
+                    }
+                });
+            }
+
+            $('#submit-score').click(function() {
+                let player = $('#player-name').val();
+                let score = $('#player-score').val();
+
+                $.ajax({
+                    url: '/api/leaderboard',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ player: player, score: score }),
+                    success: function() {
+                        updateLeaderboard();
+                    },
+                    error: function() {
+                        $('#output').html('Error submitting score');
+                    }
+                });
+            });
+
+            $('#clear-leaderboard').click(function() {
+                $.ajax({
+                    url: '/api/leaderboard/clear',
+                    method: 'POST',
+                    success: function() {
+                        updateLeaderboard();
+                    },
+                    error: function() {
+                        $('#output').html('Error clearing leaderboard');
+                    }
+                });
+            });
+
+            // init leaderboard
+            updateLeaderboard();
+        });
+    </script>
 </head>
 <body>
-
-<div id="output">--</div>
-<button id="version">Version</button>
-
-<div id="die1">--</div>
-<button id="roll">Roll</button>
-
-<div id="leaderboard">
-    <h1>Leaderboard</h1>
-    <table>
-        <thead>
-        <tr>
-            <th>Player</th>
-            <th>Score</th>
-        </tr>
-        </thead>
-        <tbody id="leaderboard-body">
-        <!-- add leaderboard stuff here -->
-        </tbody>
-    </table>
+<div class="container">
+    <div id="game">
+        <h1>Yatzy Game</h1>
+        <button id="version">Check Version</button>
+        <button id="roll">Roll Dice</button>
+        <div id="output"></div>
+        <div id="dice-container"></div>
+    </div>
+    <div id="leaderboard-section">
+        <div id="leaderboard">
+            <h1>Leaderboard</h1>
+            <table>
+                <thead>
+                <tr>
+                    <th>Player</th>
+                    <th>Score</th>
+                </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                <!-- leaderboard gets populated here -->
+                </tbody>
+            </table>
+        </div>
+        <div id="submit-score-form">
+            <h1>Submit Score</h1>
+            <input type="text" id="player-name" placeholder="Player Name">
+            <input type="text" id="player-score" placeholder="Player Score">
+            <button id="submit-score">Submit Score</button>
+            <button id="clear-leaderboard">Clear Leaderboard</button>
+        </div>
+    </div>
 </div>
-
-<script>
-    $(document).ready(function() {
-        $('#version').click(function() {
-            $.ajax({
-                url: '/api/version',
-                method: 'GET',
-                success: function(data) {
-                    $('#output').html(data.version);
-                },
-            });
-        });
-
-        $('#roll').click(function() {
-            $.ajax({
-                url: '/api/roll',
-                method: 'GET',
-                success: function(data) {
-                    $('#die1').html(data.value);
-                    $.ajax({
-                        url: '/api/leaderboard',
-                        method: 'POST',
-                        contentType: 'application/json',
-                        data: JSON.stringify({ player: 'Player1', score: data.value }),
-                        success: function() {
-                            updateLeaderboard();
-                        }
-                    });
-                },
-                error: function() {
-                    $('#die1').html('Error rolling die');
-                }
-            });
-        });
-
-        function updateLeaderboard() {
-            $.ajax({
-                url: '/api/leaderboard',
-                method: 'GET',
-                success: function(data) {
-                    const leaderboard = data.leaderboard;
-                    const tbody = $('#leaderboard-body');
-                    tbody.empty();
-                    leaderboard.forEach(function(entry) {
-                        tbody.append('<tr><td>' + entry.player + '</td><td>' + entry.score + '</td></tr>');
-                    });
-                },
-            });
-        }
-
-        updateLeaderboard();
-    });
-</script>
 </body>
 </html>

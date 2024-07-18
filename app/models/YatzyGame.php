@@ -3,12 +3,12 @@ namespace Yatzy;
 
 class YatzyGame
 {
-    public $roll;
-    public $dice;
-    public $keep;
-    public $scores;
-    public $totalScore;
-    public $sum;
+    public int $roll;
+    public array $dice;
+    public array $keep;
+    public array $scores;
+    public int $totalScore;
+    public int $sum;
 
     public function __construct()
     {
@@ -26,7 +26,7 @@ class YatzyGame
         ];
     }
 
-    public function rollDice()
+    public function rollDice(): void
     {
         for ($i = 0; $i < 5; $i++) {
             if (!$this->keep[$i]) {
@@ -37,7 +37,7 @@ class YatzyGame
         $this->roll++;
     }
 
-    public function toggleKeep($index)
+    public function toggleKeep($index): void
     {
         if (count($this->dice) > $index && $index >= 0) {
             $this->keep[$index] = !$this->keep[$index];

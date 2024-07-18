@@ -11,7 +11,7 @@ class Dice
         $this->max = $max;
     }
 
-    public function roll()
+    public function roll(): int
     {
         return rand($this->min, $this->max);
     }

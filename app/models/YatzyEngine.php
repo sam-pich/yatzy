@@ -24,6 +24,27 @@ class YatzyEngine
         }));
     }
 
+    public static function scoreFours($game)
+    {
+        return array_sum(array_filter($game->dice, function ($die) {
+            return $die == 4;
+        }));
+    }
+
+    public static function scoreFives($game)
+    {
+        return array_sum(array_filter($game->dice, function ($die) {
+            return $die == 5;
+        }));
+    }
+
+    public static function scoreSixes($game)
+    {
+        return array_sum(array_filter($game->dice, function ($die) {
+            return $die == 5;
+        }));
+    }
+
     public static function scoreFourOfAKind($game)
     {
         $counter= array_count_values($game->dice);
@@ -37,7 +58,7 @@ class YatzyEngine
         return 0;
     }
 
-    public static function scoreFullHouse($game)
+    public static function scoreFullHouse($game): int
     {
         $counts = array_count_values($game->dice);
         
@@ -47,7 +68,7 @@ class YatzyEngine
         return 0;
     }
 
-    public static function updateScore($game)
+    public static function updateScore($game): void
     {
         $game->totalScore = array_sum($game->scores);
         
