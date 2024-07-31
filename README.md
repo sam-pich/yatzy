@@ -2,6 +2,9 @@
 
 You will need pgAdmin4.  Install pgAdmin4 and create a database called "YatzyGameUsers".  In the dbconnect.php file, you can change the host, port, dbname, user, and password you want to use to connect.  This server is hosted on 5433, however most likely the host you need would be on 5432.  To fix this, either go to the properties on the pgAdmin4 server and change the port to 5433, or simply go to the dbconnect.php file and change the port to 5422.  
 
+![image](https://github.com/user-attachments/assets/8f32df8d-7ea6-42eb-900c-f3b21316128a)
+
+
 # Verify Database Connection
 
 To ensure the database is set up correctly, go to the dbconnect.php file and run it.  If it echo’s “Connected to the database!”, the database is set up correctly. 
